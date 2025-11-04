@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+"""Initialize the database."""
+
+from app import app, db
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        print("✅ Database tables created successfully!")
+        print(f"Database location: {app.config['SQLALCHEMY_DATABASE_URI']}")

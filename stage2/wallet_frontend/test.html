@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3.js Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web3.js Loading Test</h1>
+        
+        <div id="web3Status" class="status info">Checking...</div>
+        <div id="metaMaskStatus" class="status info">Checking...</div>
+        <div id="networkStatus" class="status info">Checking...</div>
+        
+        <h2>Details:</h2>
+        <pre id="details"></pre>
+    </div>
+
+    <!-- CDN Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.2/web3.min.js"></script>
+    
+    <script>
+        function updateStatus() {
+            const details = {};
+            
+            // Check Web3.js
+            if (typeof Web3 !== 'undefined') {
+                document.getElementById('web3Status').innerHTML = '✓ Web3.js loaded successfully';
+                document.getElementById('web3Status').className = 'status success';
+                details.web3 = 'Loaded (version check via console)';
+            } else {
+                document.getElementById('web3Status').innerHTML = '✗ Web3.js failed to load';
+                document.getElementById('web3Status').className = 'status error';
+                details.web3 = 'NOT loaded';
+            }
+            
+            // Check MetaMask
+            if (typeof window.ethereum !== 'undefined') {
+                document.getElementById('metaMaskStatus').innerHTML = '✓ MetaMask detected';
+                document.getElementById('metaMaskStatus').className = 'status success';
+                details.metamask = 'Available';
+            } else {
+                document.getElementById('metaMaskStatus').innerHTML = '✗ MetaMask not detected';
+                document.getElementById('metaMaskStatus').className = 'status error';
+                details.metamask = 'Not available';
+            }
+            
+            // Try to initialize Web3
+            if (typeof Web3 !== 'undefined') {
+                try {
+                    let web3;
+                    if (typeof window.ethereum !== 'undefined') {
+                        web3 = new Web3(window.ethereum);
+                        details.network = 'Connected via MetaMask';
+                    } else {
+                        const infuraUrl = 'https://sepolia.infura.io/v3/89ad13d1662840e7b1c82403551b7285';
+                        web3 = new Web3(new Web3.providers.HttpProvider(infuraUrl));
+                        details.network = 'Connected via Infura (Sepolia)';
+                    }
+                    
+                    web3.eth.getBlockNumber().then(blockNum => {
+                        details.blockNumber = `Block #${blockNum}`;
+                        document.getElementById('networkStatus').innerHTML = `✓ Connected - Block #${blockNum}`;
+                        document.getElementById('networkStatus').className = 'status success';
+                        displayDetails(details);
+                    }).catch(err => {
+                        details.error = `Failed to get block number: ${err.message}`;
+                        document.getElementById('networkStatus').innerHTML = '✗ Connection check failed';
+                        document.getElementById('networkStatus').className = 'status error';
+                        displayDetails(details);
+                    });
+                } catch (error) {
+                    details.error = error.message;
+                    document.getElementById('networkStatus').innerHTML = `✗ Error: ${error.message}`;
+                    document.getElementById('networkStatus').className = 'status error';
+                    displayDetails(details);
+                }
+            } else {
+                displayDetails(details);
+            }
+        }
+        
+        function displayDetails(obj) {
+            document.getElementById('details').textContent = JSON.stringify(obj, null, 2);
+        }
+        
+        // Run after page load
+        window.addEventListener('load', updateStatus);
+        
+        // Also run immediately in case everything is already loaded
+        setTimeout(updateStatus, 100);
+    </script>
+</body>
+</html>

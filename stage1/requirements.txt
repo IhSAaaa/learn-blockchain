@@ -1,0 +1,13 @@
+# Requirements for Stage 1
+
+# Built-in Python modules (no external dependencies needed for core functionality)
+# Python 3.7+
+
+# Testing frameworks
+pytest>=7.0.0
+pytest-cov>=4.0.0  # For coverage reporting
+
+# Optional: Code quality tools
+pylint>=2.15.0
+black>=22.10.0
+flake8>=5.0.0

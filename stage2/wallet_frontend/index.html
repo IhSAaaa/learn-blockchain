@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Greeter dApp - Stage 2</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Load Web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.2/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Greeter dApp</h1>
+            <p>Interact with a smart contract on Ethereum</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Connection and Contract Status -->
+            <div class="card">
+                <h2>Connection</h2>
+                <div class="status" id="networkStatus">
+                    <p>Status: <span id="connectionStatus">Disconnected</span></p>
+                    <p>Network: <span id="networkName">-</span></p>
+                    <p>Address: <span id="walletAddress">-</span></p>
+                </div>
+                <button onclick="connectWallet()">Connect Wallet</button>
+            </div>
+
+            <!-- Greeter Interaction -->
+            <div class="card">
+                <h2>Smart Contract</h2>
+                <p style="font-size: 13px; color: #718096; margin-bottom: 15px;">
+                    Contract: <code id="contractAddress" style="font-size: 12px;">-</code>
+                </p>
+                <h3 style="font-size: 1rem; margin-bottom: 8px; color: #2d3748;">Current Greeting</h3>
+                <p id="currentGreeting" class="greeting-display" style="background: #f7fafc; padding: 10px; border-radius: 5px; margin-bottom: 15px;">Loading...</p>
+                <button onclick="getGreeting()">Refresh</button>
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #e2e8f0;">
+                <h3 style="font-size: 1rem; margin-bottom: 8px; color: #2d3748;">Update Greeting</h3>
+                <div class="form-group">
+                    <input type="text" id="newGreeting" placeholder="Enter new greeting">
+                </div>
+                <button onclick="setGreeting()">Update</button>
+            </div>
+
+            <!-- Logs -->
+            <div class="card">
+                <h2>Activity</h2>
+                <div id="logs" class="logs">
+                    <p class="log-entry">Ready to connect...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚠️ Never share your private key</p>
+            <p>Educational purposes only</p>
+        </div>
+    </div>
+
+    <!-- Fallback Web3.js from alternative CDN -->
+    <script>
+        if (typeof Web3 === 'undefined') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/web3@1.10.2/dist/web3.min.js';
+            document.head.appendChild(script);
+        }
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
